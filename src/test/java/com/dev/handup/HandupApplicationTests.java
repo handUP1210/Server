@@ -1,4 +1,4 @@
-package com.dev.handup.handup;
+package com.dev.handup;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
