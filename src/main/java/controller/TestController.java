@@ -1,6 +1,5 @@
-package com.dev.handup.handup;
+package controller;
 
-import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +10,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1")
 public class TestController {
+
     @GetMapping("user/search")
     public Map<String, String> search() {
         Map<String, String> response = new HashMap<String, String>();
@@ -19,4 +19,5 @@ public class TestController {
         response.put("email", "xxxxxxxx@gmail.com");
         return response;
     }
+
 }
