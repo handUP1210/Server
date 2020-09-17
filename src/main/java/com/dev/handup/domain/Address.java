@@ -1,23 +1,20 @@
 package domain;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 
-@Entity
+@Getter
 @Embeddable
-@RequiredArgsConstructor
 public class Address {
-
-    @Id @GeneratedValue
-    private Long id;
 
     private String city;
     private String street;
     private String zipcode;
+
+    public Address() { // 변경 불가능 제약 조건
+
+    }
 
     public Address(String city, String street, String zipcode) {
         this.city = city;
