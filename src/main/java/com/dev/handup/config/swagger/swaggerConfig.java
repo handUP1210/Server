@@ -1,4 +1,4 @@
-package config.swagger;
+package com.dev.handup.config.swagger;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ public class swaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(this.swaggerInfo()) // 스웨거 정보 등록
                 .select()
-                .apis(RequestHandlerSelectors.any()) // 모든 controller 패키지 탐색
+                .apis(RequestHandlerSelectors.any()) // 모든 com.dev.handup.controller 패키지 탐색
                 .paths(PathSelectors.any())
                 .build()
                 .useDefaultResponseMessages(true); // 디폴트 200, 401, 403, 404 메시지 표

@@ -1,4 +1,4 @@
-package domain;
+package com.dev.handup.domain;
 
 import lombok.Getter;
 
@@ -9,16 +9,14 @@ import javax.persistence.Embeddable;
 public class Address {
 
     private String city;
-    private String street;
-    private String zipcode;
+    private String team;
 
     public Address() { // 변경 불가능 제약 조건
 
     }
 
-    public Address(String city, String street, String zipcode) {
+    public Address(String city, String team) {
         this.city = city;
-        this.street = street;
-        this.zipcode = zipcode;
+        this.team = team;
     }
 }
