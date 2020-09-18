@@ -31,7 +31,7 @@ public class UserApiController {
         return new CreateUserResponse(id);
     }
 
-    @PutMapping("users/{id}") // 수정
+    @PutMapping("user/{id}") // 수정
     public UpdateUserResponse updateUser(@PathVariable("id") Long id,
                                          @RequestBody @Valid UpdateUserRequest request) {
         userService.update(id, request.password, request.address, request.nickname); // 로직
