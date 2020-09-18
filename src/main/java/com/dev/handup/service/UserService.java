@@ -45,6 +45,7 @@ public class UserService {
     public void update(Long id, String password, Address address, String nickname) {
         User user = userRepository.findById(id).orElse(null);
 
+        // Dirty Check
         assert user != null;
         user.setPassword(password);
         user.setAddress(address);
