@@ -2,11 +2,12 @@ package com.dev.handup.controller;
 
 import com.dev.handup.domain.Address;
 import com.dev.handup.domain.User;
+import com.dev.handup.dtos.UserDto;
+import com.dev.handup.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import com.dev.handup.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -21,12 +22,21 @@ public class UserApiController {
     @GetMapping("user/{nickname}")
     public UserDto getUser(@PathVariable("nickname") String nickname) {
         User findUser = userService.findUserNickname(nickname);
-        return new UserDto(findUser.getEmail(), findUser.getNickname(), findUser.getAddress());
+        return UserDto.builder()
+                .email(findUser.getEmail())
+                .nickname(findUser.getNickname())
+                .address(findUser.getAddress())
+                .build();
     }
 
     @PostMapping("user")
     public CreateUserResponse saveUser(@RequestBody @Valid CreateUserRequest request) {
-        User user = User.createUser(request.email, request.password, request.nickname, request.address);
+        User user = User.builder()
+                .email(request.email)
+                .password(request.password)
+                .nickname(request.nickname)
+                .address(request.address)
+                .build();
         Long id = userService.join(user);
         return new CreateUserResponse(id);
     }
@@ -43,7 +53,11 @@ public class UserApiController {
     public Result<List<UserDto>> getAllUser() {
         List<User> findUsers = userService.findUsers();
         List<UserDto> collect = findUsers.stream()
-                .map(u -> new UserDto(u.getEmail(), u.getNickname(), u.getAddress()))
+                .map(u -> UserDto.builder()
+                        .email(u.getEmail())
+                        .nickname(u.getNickname())
+                        .address(u.getAddress())
+                        .build())
                 .collect(Collectors.toList());
 
         return new Result<>(collect);
@@ -54,14 +68,6 @@ public class UserApiController {
     @AllArgsConstructor
     static class Result<T> {
         private T data;
-    }
-
-    @AllArgsConstructor
-    @Data
-    static class UserDto {
-        private String email;
-        private String nickname;
-        private Address address;
     }
 
     @Data
