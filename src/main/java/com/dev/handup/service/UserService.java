@@ -75,12 +75,12 @@ public class UserService implements UserDetailsService {
         // 비밀번호 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-
-        return userRepository.save(userDto.toEntity()).getId();
+        User user = (User) userDto.toEntity();
+        return userRepository.save(user).getId();
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByNickname(username);
+        return (UserDetails) userRepository.findByNickname(username);
     }
 }

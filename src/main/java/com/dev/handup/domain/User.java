@@ -37,7 +37,7 @@ public class User {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.ROLE_NOT_PERMITTED;
+    private final UserRole role = UserRole.ROLE_NOT_PERMITTED;
 
     // 빌더
     @Builder

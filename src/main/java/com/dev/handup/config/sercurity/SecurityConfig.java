@@ -20,31 +20,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserService userService;
 
+    // Password 암호화
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // 빌더
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
 
+    // 웹
     @Override
     public void configure(WebSecurity web) throws Exception {
         // static 디렉터리의 하위 파일 목록은 인증 무시 ( = 항상통과 )
         web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
     }
 
+    // Http
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+                .csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
                 .authorizeRequests()
                 // 페이지 권한 설정
                 .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/user/myinfo").hasRole("USER")
+                .antMatchers("/user/info").hasRole("USER")
                 .antMatchers("/**").permitAll()
                 .and() // 로그인 설정
                 .formLogin()

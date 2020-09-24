@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserApiController {
     private final UserService userService;
 
-    @GetMapping("user/{nickname}")
+    @GetMapping("users/{nickname}")
     public UserDto getUser(@PathVariable("nickname") String nickname) {
         User findUser = userService.findUserNickname(nickname);
         return UserDto.builder()
@@ -29,7 +29,7 @@ public class UserApiController {
                 .build();
     }
 
-    @PostMapping("user")
+    @PostMapping("users")
     public CreateUserResponse saveUser(@RequestBody @Valid CreateUserRequest request) {
         User user = User.builder()
                 .email(request.email)
@@ -41,7 +41,7 @@ public class UserApiController {
         return new CreateUserResponse(id);
     }
 
-    @PutMapping("user/{id}") // 수정
+    @PutMapping("users/{id}") // 수정
     public UpdateUserResponse updateUser(@PathVariable("id") Long id,
                                          @RequestBody @Valid UpdateUserRequest request) {
         userService.update(id, request.password, request.address, request.nickname); // 로직
@@ -49,7 +49,7 @@ public class UserApiController {
         return new UpdateUserResponse(findUser.getId(), findUser.getEmail(), findUser.getPassword(), findUser.getNickname(), findUser.getAddress());
     }
 
-    @GetMapping("users")
+    @GetMapping("users/list")
     public Result<List<UserDto>> getAllUser() {
         List<User> findUsers = userService.findUsers();
         List<UserDto> collect = findUsers.stream()
