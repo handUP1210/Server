@@ -1,12 +1,13 @@
 package com.dev.handup.controller;
 
 import com.dev.handup.domain.Address;
-import com.dev.handup.domain.User;
+import com.dev.handup.domain.users.User;
+import com.dev.handup.dto.users.UserDto;
+import com.dev.handup.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import com.dev.handup.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -18,20 +19,38 @@ import java.util.stream.Collectors;
 public class UserApiController {
     private final UserService userService;
 
-    @GetMapping("user/{nickname}")
-    public UserDto getUser(@PathVariable("nickname") String nickname) {
-        User findUser = userService.findUserNickname(nickname);
-        return new UserDto(findUser.getEmail(), findUser.getNickname(), findUser.getAddress());
-    }
-
-    @PostMapping("user")
-    public CreateUserResponse saveUser(@RequestBody @Valid CreateUserRequest request) {
-        User user = User.createUser(request.email, request.password, request.nickname, request.address);
-        Long id = userService.join(user);
+    @PostMapping("users")
+    public CreateUserResponse signUpUser(@RequestBody @Valid CreateUserRequest request) {
+        UserDto userDto = UserDto.builder()
+                .email(request.email)
+                .password(request.password)
+                .nickname(request.nickname)
+                .address(request.address)
+                .build();
+        Long id = userService.joinUser(userDto);
         return new CreateUserResponse(id);
     }
 
-    @PutMapping("user/{id}") // 수정
+    @GetMapping("users")
+    public void loginUser(@RequestBody @Valid CreateUserRequest request) throws Exception {
+        UserDto userDto = UserDto.builder()
+                .email(request.email)
+                .password(request.password)
+                .build();
+        userService.loginUser(userDto);
+    }
+
+    @GetMapping("users/{nickname}")
+    public UserDto getUser(@PathVariable("nickname") String nickname) {
+        User findUser = userService.findUserNickname(nickname);
+        return UserDto.builder()
+                .email(findUser.getEmail())
+                .nickname(findUser.getNickname())
+                .address(findUser.getAddress())
+                .build();
+    }
+
+    @PutMapping("users/{id}") // 수정
     public UpdateUserResponse updateUser(@PathVariable("id") Long id,
                                          @RequestBody @Valid UpdateUserRequest request) {
         userService.update(id, request.password, request.address, request.nickname); // 로직
@@ -39,11 +58,15 @@ public class UserApiController {
         return new UpdateUserResponse(findUser.getId(), findUser.getEmail(), findUser.getPassword(), findUser.getNickname(), findUser.getAddress());
     }
 
-    @GetMapping("users")
+    @GetMapping("users/list")
     public Result<List<UserDto>> getAllUser() {
         List<User> findUsers = userService.findUsers();
         List<UserDto> collect = findUsers.stream()
-                .map(u -> new UserDto(u.getEmail(), u.getNickname(), u.getAddress()))
+                .map(u -> UserDto.builder()
+                        .email(u.getEmail())
+                        .nickname(u.getNickname())
+                        .address(u.getAddress())
+                        .build())
                 .collect(Collectors.toList());
 
         return new Result<>(collect);
@@ -54,14 +77,6 @@ public class UserApiController {
     @AllArgsConstructor
     static class Result<T> {
         private T data;
-    }
-
-    @AllArgsConstructor
-    @Data
-    static class UserDto {
-        private String email;
-        private String nickname;
-        private Address address;
     }
 
     @Data

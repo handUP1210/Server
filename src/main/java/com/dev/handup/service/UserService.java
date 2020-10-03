@@ -1,20 +1,26 @@
 package com.dev.handup.service;
 
 import com.dev.handup.domain.Address;
-import com.dev.handup.domain.User;
+import com.dev.handup.domain.users.User;
+import com.dev.handup.dto.users.UserDto;
+import com.dev.handup.domain.users.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.dev.handup.repository.UserRepository;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    // 조회
     public User findOne(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -27,11 +33,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    @Transactional
-    public Long join(User user) {
-        validateDuplicateMember(user);
-        userRepository.save(user);
-        return user.getId();
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     private void validateDuplicateMember(User user) {
@@ -41,14 +44,45 @@ public class UserService {
         }
     }
 
+    public User loginUser(UserDto userDto) throws Exception{
+
+        User user = userRepository.findByEmail(userDto.getEmail()).orElse(null);
+
+        if(user == null) throw new Exception ("멤버가 조회되지 않음");
+
+        if(!user.getPassword().equals(userDto.getPassword()) && !user.getEmail().equals(userDto.getEmail())) {
+            throw new Exception("비밀번호 또는 이메일을 확인하세요.");
+        }
+
+        return user;
+    }
+
+    @Transactional
+    public void signUpUser(User user) {
+        validateDuplicateMember(user);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public Long joinUser(UserDto userDto) {
+        // 비밀번호 암호화
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        User user = userDto.toEntity();
+        return userRepository.save(user).getId();
+    }
+
     @Transactional
     public void update(Long id, String password, Address address, String nickname) {
         User user = userRepository.findById(id).orElse(null);
 
-        // Dirty Check
+        // 더티 체킹
         assert user != null;
-        user.setPassword(password);
-        user.setAddress(address);
-        user.setNickname(nickname);
+        user.updateUser(password, nickname, address);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return (UserDetails) userRepository.findByNickname(username);
     }
 }

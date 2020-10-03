@@ -1,9 +1,9 @@
-package com.dev.handup.repository;
+package com.dev.handup.domain.users;
 
-import com.dev.handup.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -11,4 +11,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByNickname(String nickname);
 
     List<User> findByEmailAndNickname(String email, String nickname);
+
+    Optional<User> findByEmail(String email);
 }

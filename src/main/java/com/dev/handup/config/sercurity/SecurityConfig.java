@@ -1,0 +1,46 @@
+package com.dev.handup.config.sercurity;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+@RequiredArgsConstructor
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    // Password 암호화
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // 웹
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        // static 디렉터리의 하위 파일 목록은 인증 무시
+        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/lib/**");
+    }
+
+    // Http
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+                .httpBasic().disable()
+                .csrf().disable()
+                .headers().frameOptions().disable()
+                .and()
+                .formLogin().disable()
+                .authorizeRequests()
+                // 페이지 권한 설정
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .antMatchers("/**").permitAll();
+    }
+}
