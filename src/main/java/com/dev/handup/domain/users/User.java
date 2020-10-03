@@ -1,5 +1,6 @@
-package com.dev.handup.domain;
+package com.dev.handup.domain.users;
 
+import com.dev.handup.domain.Address;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.Date;
 @Getter
 public class User {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id; // PK
 
@@ -37,15 +38,16 @@ public class User {
 
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private final UserRole role = UserRole.ROLE_NOT_PERMITTED;
+    private UserRole role = UserRole.ROLE_NOT_PERMITTED;
 
     // 빌더
     @Builder
-    public User(String email, String password, String nickname, Address address) {
+    public User(String email, String password, String nickname, Address address, UserRole role) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.address = address;
+        this.role = role;
     }
 
     public void updateUser(String password, String nickname, Address address) {

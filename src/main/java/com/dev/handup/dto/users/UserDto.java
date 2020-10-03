@@ -1,13 +1,15 @@
-package com.dev.handup.dtos;
+package com.dev.handup.dto.users;
 
 import com.dev.handup.domain.Address;
-import com.dev.handup.domain.User;
-import com.dev.handup.domain.UserRole;
-import lombok.AllArgsConstructor;
+import com.dev.handup.domain.users.User;
+import com.dev.handup.domain.users.UserRole;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
 @Data
 public class UserDto {
     private long id;
@@ -16,8 +18,9 @@ public class UserDto {
     private String nickname;
     private Address address;
     private UserRole role;
+    private LocalDateTime localDateTime;
 
-    public Object toEntity() {
+    public User toEntity() {
         return User.builder()
                 .nickname(nickname)
                 .email(email)

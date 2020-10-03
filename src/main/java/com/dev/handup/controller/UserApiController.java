@@ -1,8 +1,8 @@
 package com.dev.handup.controller;
 
 import com.dev.handup.domain.Address;
-import com.dev.handup.domain.User;
-import com.dev.handup.dtos.UserDto;
+import com.dev.handup.domain.users.User;
+import com.dev.handup.dto.users.UserDto;
 import com.dev.handup.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +19,27 @@ import java.util.stream.Collectors;
 public class UserApiController {
     private final UserService userService;
 
+    @PostMapping("users")
+    public CreateUserResponse signUpUser(@RequestBody @Valid CreateUserRequest request) {
+        UserDto userDto = UserDto.builder()
+                .email(request.email)
+                .password(request.password)
+                .nickname(request.nickname)
+                .address(request.address)
+                .build();
+        Long id = userService.joinUser(userDto);
+        return new CreateUserResponse(id);
+    }
+
+    @GetMapping("users")
+    public void loginUser(@RequestBody @Valid CreateUserRequest request) throws Exception {
+        UserDto userDto = UserDto.builder()
+                .email(request.email)
+                .password(request.password)
+                .build();
+        userService.loginUser(userDto);
+    }
+
     @GetMapping("users/{nickname}")
     public UserDto getUser(@PathVariable("nickname") String nickname) {
         User findUser = userService.findUserNickname(nickname);
@@ -27,18 +48,6 @@ public class UserApiController {
                 .nickname(findUser.getNickname())
                 .address(findUser.getAddress())
                 .build();
-    }
-
-    @PostMapping("users")
-    public CreateUserResponse saveUser(@RequestBody @Valid CreateUserRequest request) {
-        User user = User.builder()
-                .email(request.email)
-                .password(request.password)
-                .nickname(request.nickname)
-                .address(request.address)
-                .build();
-        Long id = userService.join(user);
-        return new CreateUserResponse(id);
     }
 
     @PutMapping("users/{id}") // 수정

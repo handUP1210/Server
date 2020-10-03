@@ -1,23 +1,12 @@
 package com.dev.handup.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping("test/v1")
 public class TestController {
-
-    @GetMapping("user/search")
-    public Map<String, String> search() {
-        Map<String, String> response = new HashMap<String, String>();
-        response.put("name", "taehong.kim");
-        response.put("age", "28");
-        response.put("email", "xxxxxxxx@gmail.com");
-        return response;
-    }
 
 }

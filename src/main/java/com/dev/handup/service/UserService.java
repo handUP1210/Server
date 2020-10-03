@@ -1,9 +1,9 @@
 package com.dev.handup.service;
 
 import com.dev.handup.domain.Address;
-import com.dev.handup.domain.User;
-import com.dev.handup.dtos.UserDto;
-import com.dev.handup.repository.UserRepository;
+import com.dev.handup.domain.users.User;
+import com.dev.handup.dto.users.UserDto;
+import com.dev.handup.domain.users.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +20,7 @@ import java.util.List;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    // 조회
     public User findOne(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -32,11 +33,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    @Transactional
-    public Long join(User user) {
-        validateDuplicateMember(user);
-        userRepository.save(user);
-        return user.getId();
+    public User findByEmail(String email){
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     private void validateDuplicateMember(User user) {
@@ -46,28 +44,23 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    @Transactional
-    public void update(Long id, String password, Address address, String nickname) {
-        User user = userRepository.findById(id).orElse(null);
+    public User loginUser(UserDto userDto) throws Exception{
 
-        // Dirty Check
-        assert user != null;
-        user.updateUser(password, nickname, address);
-    }
-    
-    public void signUpUser(User user) {
-        userRepository.save(user);
-    }
-    
-    public User loginUser(String email, String password) throws Exception{
-
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(userDto.getEmail()).orElse(null);
 
         if(user == null) throw new Exception ("멤버가 조회되지 않음");
 
-        if(!user.getPassword().equals(password))
-            throw new Exception ("비밀번호가 틀립니다.");
+        if(!user.getPassword().equals(userDto.getPassword()) && !user.getEmail().equals(userDto.getEmail())) {
+            throw new Exception("비밀번호 또는 이메일을 확인하세요.");
+        }
+
         return user;
+    }
+
+    @Transactional
+    public void signUpUser(User user) {
+        validateDuplicateMember(user);
+        userRepository.save(user);
     }
 
     @Transactional
@@ -75,8 +68,17 @@ public class UserService implements UserDetailsService {
         // 비밀번호 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        User user = (User) userDto.toEntity();
+        User user = userDto.toEntity();
         return userRepository.save(user).getId();
+    }
+
+    @Transactional
+    public void update(Long id, String password, Address address, String nickname) {
+        User user = userRepository.findById(id).orElse(null);
+
+        // 더티 체킹
+        assert user != null;
+        user.updateUser(password, nickname, address);
     }
 
     @Override
