@@ -1,7 +1,7 @@
 package com.dev.handup.Controller;
 
 import com.dev.handup.domain.posts.PostRepository;
-import com.dev.handup.dto.posts.PostSaveRequestDto;
+import com.dev.handup.dto.posts.PostsSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.junit.After;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class PostApiControllerTest {
         //given
         String title = "title";
         String content = "Content";
-        PostSaveRequestDto requestDto = PostSaveRequestDto
+        PostsSaveRequestDto requestDto = PostsSaveRequestDto
                 .builder()
                 .title(title)
                 .content(content)
