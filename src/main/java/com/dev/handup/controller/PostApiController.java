@@ -1,11 +1,14 @@
 package com.dev.handup.controller;
 
-import com.dev.handup.dto.posts.PostResponseDto;
-import com.dev.handup.dto.posts.PostSaveRequestDto;
-import com.dev.handup.dto.posts.PostUpdateRequestDto;
+import com.dev.handup.dto.posts.PostsListResponseDto;
+import com.dev.handup.dto.posts.PostsResponseDto;
+import com.dev.handup.dto.posts.PostsSaveRequestDto;
+import com.dev.handup.dto.posts.PostsUpdateRequestDto;
 import com.dev.handup.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -14,18 +17,29 @@ public class PostApiController {
 
     private final PostService postService;
 
+    @GetMapping("/")
+    public List<PostsListResponseDto> findByAllDesc() {
+        return postService.findAllDesc();
+    }
+
     @PostMapping("posts")
-    public Long savePost(@RequestBody PostSaveRequestDto requestDto) {
+    public Long savePost(@RequestBody PostsSaveRequestDto requestDto) {
         return postService.save(requestDto);
     }
 
     @PutMapping("posts/{id}")
-    public Long updatePost(@PathVariable Long id, @RequestBody PostUpdateRequestDto requestDto) {
+    public Long updatePost(@PathVariable Long id, @RequestBody PostsUpdateRequestDto requestDto) {
         return postService.update(id, requestDto);
     }
 
-    @GetMapping("post/{id}")
-    public PostResponseDto findById(@PathVariable Long id) {
+    @GetMapping("posts/{id}")
+    public PostsResponseDto findById(@PathVariable Long id) {
         return postService.findById(id);
+    }
+
+    @DeleteMapping("posts/{id}")
+    public Long delete(@PathVariable Long id) {
+        postService.delete(id);
+        return id;
     }
 }

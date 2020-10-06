@@ -15,6 +15,9 @@ spring:
       name: user
       password: test
 
+  profiles:
+    include: oauth
+
   jpa:
     hibernate:
       ddl-auto: create

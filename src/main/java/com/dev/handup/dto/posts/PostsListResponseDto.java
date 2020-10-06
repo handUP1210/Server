@@ -4,20 +4,20 @@ import com.dev.handup.domain.posts.Post;
 import lombok.Data;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Data
-public class PostResponseDto {
-
+public class PostsListResponseDto {
     private Long id;
     private String title;
-    private String content;
     private String author;
+    private LocalDateTime modifiedData;
 
-    public PostResponseDto(Post entity) {
+    public PostsListResponseDto(Post entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
         this.author = entity.getAuthor();
-        this.content = entity.getContent();
+        this.modifiedData = entity.getModifiedDate();
     }
-
 }
