@@ -1,9 +1,9 @@
 package com.dev.handup.config.sercurity;
 
+import com.dev.handup.domain.users.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     // Password 암호화
     @Bean
@@ -37,10 +39,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
-                .formLogin().disable()
+                // URL 구분, 권한 설정
                 .authorizeRequests()
-                // 페이지 권한 설정
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/**").permitAll();
+                .antMatchers("/", "/css/**", "/js/**", "/images/**", "/lib/**", "/h2-console/**").permitAll()
+                .antMatchers("/api/v1/**").hasRole(UserRole.USER.name())
+                .anyRequest().authenticated()
+                .and()
+                .oauth2Login()
+                .userInfoEndpoint()
+                .userService(customOAuth2UserService);
     }
 }

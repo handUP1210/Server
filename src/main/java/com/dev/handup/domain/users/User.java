@@ -11,9 +11,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
-@Entity
+
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 접근 불가, new user() 불가
 @Getter
+@Entity
 public class User {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,10 +24,9 @@ public class User {
     @NotBlank
     private String email;
 
-    @NotBlank
+
     private String password;
 
-    @NotBlank
     private String nickname;
 
     @Embedded
@@ -36,9 +36,9 @@ public class User {
     @CreationTimestamp
     private Date createAt;
 
-    @Column(name = "role")
-    @Enumerated(EnumType.STRING)
-    private UserRole role = UserRole.ROLE_NOT_PERMITTED;
+    @Column(name = "role", nullable = false)
+    @Enumerated(EnumType.STRING) // 저장값을 문자열로 고정
+    private UserRole role = UserRole.NOT_PERMITTED;
 
     // 빌더
     @Builder
@@ -55,4 +55,17 @@ public class User {
         this.nickname = nickname;
         this.address = address;
     }
+
+    public User update(String email, String nickname) {
+        this.nickname = nickname;
+        this.email = email;
+
+        return this;
+    }
+
+    public String getRoleKey() {
+        return this.role.getKey();
+    }
+
 }
+
