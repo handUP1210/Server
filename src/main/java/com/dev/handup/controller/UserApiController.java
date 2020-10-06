@@ -3,11 +3,10 @@ package com.dev.handup.controller;
 import com.dev.handup.domain.users.User;
 import com.dev.handup.dto.users.*;
 import com.dev.handup.service.UserService;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +16,7 @@ import java.util.stream.Collectors;
 @RequestMapping("api/v1")
 public class UserApiController {
     private final UserService userService;
+    private final HttpSession httpSession;
 
     @PostMapping("users")
     public UsersCreateResponseDto signUpUser(@RequestBody @Valid UsersCreateRequestDto request) {
@@ -58,7 +58,7 @@ public class UserApiController {
     }
 
     @GetMapping("users/list")
-    public Result<List<UserDto>> getAllUser() {
+    public UsersListResultData<List<UserDto>> getAllUser() {
         List<User> findUsers = userService.findUsers();
         List<UserDto> collect = findUsers.stream()
                 .map(u -> UserDto.builder()
@@ -68,14 +68,6 @@ public class UserApiController {
                         .build())
                 .collect(Collectors.toList());
 
-        return new Result<>(collect);
+        return new UsersListResultData<>(collect);
     }
-
-
-    @Data
-    @AllArgsConstructor
-    static class Result<T> {
-        private T data;
-    }
-
 }
