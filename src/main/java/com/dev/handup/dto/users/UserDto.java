@@ -4,14 +4,11 @@ import com.dev.handup.domain.Address;
 import com.dev.handup.domain.BaseTimeEntity;
 import com.dev.handup.domain.users.User;
 import com.dev.handup.domain.users.UserRole;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @Getter
-@Data
+@Setter
 public class UserDto extends BaseTimeEntity {
     private long id;
     private String email;
