@@ -12,15 +12,15 @@ public class OAuthAttributes {
     private final Map<String, Object> attributes;
     private final String nameAttributeKey;
     private final String email;
-    private final String nickname;
+    private final String name;
 
     @Builder
     public OAuthAttributes(Map<String, Object> attributes, String nameAttributeKey,
-                           String email, String nickname) {
+                           String email, String name) {
         this.attributes = attributes;
         this.nameAttributeKey = nameAttributeKey;
         this.email = email;
-        this.nickname = nickname;
+        this.name = name;
     }
 
     public static OAuthAttributes of(String registrationId,
@@ -31,7 +31,7 @@ public class OAuthAttributes {
 
     public static OAuthAttributes ofGoogle(String userNameAttributeName, Map<String, Object> attributes) {
         return OAuthAttributes.builder()
-                .nickname((String) attributes.get("nickname"))
+                .name((String) attributes.get("name"))
                 .email((String) attributes.get("email"))
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
@@ -40,9 +40,9 @@ public class OAuthAttributes {
 
     public User toEntity() {
         return User.builder()
-                .nickname(nickname)
+                .name(name)
                 .email(email)
-                .role(UserRole.NOT_PERMITTED)
+                .role(UserRole.USER)
                 .build();
     }
 }

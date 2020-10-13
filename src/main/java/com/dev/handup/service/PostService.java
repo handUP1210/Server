@@ -41,6 +41,14 @@ public class PostService {
     }
 
     @Transactional
+    public List<PostsListResponseDto> findAllASC() {
+        return postRepository.findAll()
+                .stream()
+                .map(PostsListResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public void delete(Long id) {
         Post post = postRepository.findById(id).orElseThrow(() -> new IllegalStateException("해당 게시글이 없습니다"));
         postRepository.delete(post);
@@ -51,6 +59,4 @@ public class PostService {
 
         return new PostsResponseDto(post);
     }
-
-
 }

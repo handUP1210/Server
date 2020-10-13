@@ -25,8 +25,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User findUserNickname(String nickname) {
-        return userRepository.findByNickname(nickname);
+    public User findUserName(String name) {
+        return userRepository.findByName(name);
     }
 
     public List<User> findUsers() {
@@ -38,13 +38,13 @@ public class UserService implements UserDetailsService {
     }
 
     private void validateDuplicateMember(User user) {
-        List<User> findUser = userRepository.findByEmailAndNickname(user.getEmail(), user.getNickname());
+        List<User> findUser = userRepository.findByEmailAndName(user.getEmail(), user.getName());
         if (!findUser.isEmpty()) {
             throw new IllegalStateException("이미 존재 하는 회원 이메일 또는 닉네임입니다.");
         }
     }
 
-    public User loginUser(UserDto userDto) throws Exception{
+    public void loginUser(UserDto userDto) throws Exception{
 
         User user = userRepository.findByEmail(userDto.getEmail()).orElse(null);
 
@@ -53,8 +53,6 @@ public class UserService implements UserDetailsService {
         if(!user.getPassword().equals(userDto.getPassword()) && !user.getEmail().equals(userDto.getEmail())) {
             throw new Exception("비밀번호 또는 이메일을 확인하세요.");
         }
-
-        return user;
     }
 
     @Transactional
@@ -73,16 +71,16 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void update(Long id, String password, Address address, String nickname) {
+    public void update(Long id, String password, Address address, String name) {
         User user = userRepository.findById(id).orElse(null);
 
         // 더티 체킹
         assert user != null;
-        user.updateUser(password, nickname, address);
+        user.updateUser(password, name, address);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return (UserDetails) userRepository.findByNickname(username);
+        return (UserDetails) userRepository.findByName(username);
     }
 }

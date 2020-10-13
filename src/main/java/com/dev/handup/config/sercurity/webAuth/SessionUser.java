@@ -8,11 +8,11 @@ import java.io.Serializable;
 @Getter
 public class SessionUser implements Serializable {
 
-    private final String nickname;
+    private final String name;
     private final String email;
 
     public SessionUser(User user) {
-        this.nickname = user.getNickname();
+        this.name = user.getName();
         this.email = user.getEmail();
     }
 }
