@@ -7,6 +7,9 @@ spring:
       - oauth
       - aws
 
+  session:
+    store-type: jdbc
+
   servlet:
     multipart:
       max-file-size: 10MB
