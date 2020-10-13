@@ -1,4 +1,4 @@
-package com.dev.handup.config.sercurity;
+package com.dev.handup.config.sercurity.webAuth;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

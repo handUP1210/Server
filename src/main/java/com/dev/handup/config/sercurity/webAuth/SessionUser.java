@@ -1,4 +1,4 @@
-package com.dev.handup.config.sercurity;
+package com.dev.handup.config.sercurity.webAuth;
 
 import com.dev.handup.domain.users.User;
 import lombok.Getter;

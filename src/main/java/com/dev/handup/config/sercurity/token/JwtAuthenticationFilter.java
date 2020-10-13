@@ -1,4 +1,4 @@
-package com.dev.handup.config.sercurity;
+package com.dev.handup.config.sercurity.token;
 
 import lombok.RequiredArgsConstructor;
 
