@@ -34,7 +34,17 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING) // 저장값을 문자열로 고정
     private UserRole role = UserRole.NOT_PERMITTED;
 
-    // 빌더
+    // 기본 가입 시 NOT_PERMITTED 권한 부여
+    @Builder
+    public User(String email, String password, String name, Address address) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.address = address;
+        this.role = getRole();
+    }
+
+    // 인증 로직을 통해 ROLE_USER로 권한 변경
     @Builder
     public User(String email, String password, String name, Address address, UserRole role) {
         this.email = email;

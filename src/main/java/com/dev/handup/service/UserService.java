@@ -18,7 +18,15 @@ import java.util.List;
 @Transactional(readOnly = true)
 @Service
 public class UserService implements UserDetailsService {
+
     private final UserRepository userRepository;
+
+    private void validateDuplicateMember(User user) {
+        List<User> findUser = userRepository.findByEmailAndName(user.getEmail(), user.getName());
+        if (!findUser.isEmpty()) {
+            throw new IllegalStateException("이미 존재 하는 회원 이메일 또는 닉네임입니다.");
+        }
+    }
 
     // 조회
     public User findOne(Long id) {
@@ -37,14 +45,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    private void validateDuplicateMember(User user) {
-        List<User> findUser = userRepository.findByEmailAndName(user.getEmail(), user.getName());
-        if (!findUser.isEmpty()) {
-            throw new IllegalStateException("이미 존재 하는 회원 이메일 또는 닉네임입니다.");
-        }
-    }
-
     public void loginUser(UserDto userDto) throws Exception{
+
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         User user = userRepository.findByEmail(userDto.getEmail()).orElse(null);
 
@@ -56,17 +60,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void signUpUser(User user) {
-        validateDuplicateMember(user);
-        userRepository.save(user);
-    }
-
-    @Transactional
     public Long joinUser(UserDto userDto) {
         // 비밀번호 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        // NOT_PERMITTED 권한 상태
         User user = userDto.toEntity();
+
+        // 중복 체크
+        validateDuplicateMember(user);
+
         return userRepository.save(user).getId();
     }
 

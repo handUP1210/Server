@@ -38,6 +38,11 @@ public class OAuthAttributes {
                 .build();
     }
 
+    /**
+     *
+     * @return ROLE_USER
+     * 권한 변경을 위한 빌더 엔티티 메소드
+     */
     public User toEntity() {
         return User.builder()
                 .name(name)

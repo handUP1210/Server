@@ -10,6 +10,7 @@ import lombok.*;
 @Getter
 @Setter
 public class UserDto extends BaseTimeEntity {
+
     private long id;
     private String email;
     private String password;
