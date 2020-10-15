@@ -21,6 +21,7 @@ import java.util.Collections;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
+    // OAuth 로그인 후 가져올 정보들
     private final UserRepository userRepository;
     private final HttpSession httpSession;
 
