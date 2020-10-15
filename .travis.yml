@@ -5,7 +5,7 @@ jdk:
 
 branches:
   only:
-    - develop-1
+    - master
     # Travis CI Server
 cache:
   directories:
