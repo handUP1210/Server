@@ -18,15 +18,23 @@ import java.util.List;
 @Transactional(readOnly = true)
 @Service
 public class UserService implements UserDetailsService {
+
     private final UserRepository userRepository;
+
+    private void validateDuplicateMember(User user) {
+        List<User> findUser = userRepository.findByEmailAndName(user.getEmail(), user.getName());
+        if (!findUser.isEmpty()) {
+            throw new IllegalStateException("이미 존재 하는 회원 이메일 또는 닉네임입니다.");
+        }
+    }
 
     // 조회
     public User findOne(Long id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User findUserNickname(String nickname) {
-        return userRepository.findByNickname(nickname);
+    public User findUserName(String name) {
+        return userRepository.findByName(name);
     }
 
     public List<User> findUsers() {
@@ -37,14 +45,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    private void validateDuplicateMember(User user) {
-        List<User> findUser = userRepository.findByEmailAndNickname(user.getEmail(), user.getNickname());
-        if (!findUser.isEmpty()) {
-            throw new IllegalStateException("이미 존재 하는 회원 이메일 또는 닉네임입니다.");
-        }
-    }
+    public void loginUser(UserDto userDto) throws Exception{
 
-    public User loginUser(UserDto userDto) throws Exception{
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         User user = userRepository.findByEmail(userDto.getEmail()).orElse(null);
 
@@ -53,14 +57,6 @@ public class UserService implements UserDetailsService {
         if(!user.getPassword().equals(userDto.getPassword()) && !user.getEmail().equals(userDto.getEmail())) {
             throw new Exception("비밀번호 또는 이메일을 확인하세요.");
         }
-
-        return user;
-    }
-
-    @Transactional
-    public void signUpUser(User user) {
-        validateDuplicateMember(user);
-        userRepository.save(user);
     }
 
     @Transactional
@@ -68,21 +64,27 @@ public class UserService implements UserDetailsService {
         // 비밀번호 암호화
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        // NOT_PERMITTED 권한 상태
         User user = userDto.toEntity();
+
+        // 중복 체크
+        validateDuplicateMember(user);
+
         return userRepository.save(user).getId();
     }
 
     @Transactional
-    public void update(Long id, String password, Address address, String nickname) {
+    public void update(Long id, String password, Address address, String name) {
         User user = userRepository.findById(id).orElse(null);
 
         // 더티 체킹
         assert user != null;
-        user.updateUser(password, nickname, address);
+        user.updateUser(password, name, address);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return (UserDetails) userRepository.findByNickname(username);
+        return (UserDetails) userRepository.findByName(username);
     }
 }

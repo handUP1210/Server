@@ -10,6 +10,6 @@ public class UsersUpdateRequestDto {
 
     private String email;
     private String password;
-    private String nickname;
+    private String name;
     private Address address;
 }

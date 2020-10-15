@@ -10,14 +10,14 @@ public class UsersUpdateResponseDto {
     private Long id;
     private String email;
     private String password;
-    private String nickname;
+    private String name;
     private Address address;
 
-    public UsersUpdateResponseDto(Long id, String email, String password, String nickname, Address address) {
+    public UsersUpdateResponseDto(Long id, String email, String password, String name, Address address) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.nickname = nickname;
+        this.name = name;
         this.address = address;
     }
 }

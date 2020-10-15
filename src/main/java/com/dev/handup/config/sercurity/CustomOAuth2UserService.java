@@ -1,5 +1,6 @@
 package com.dev.handup.config.sercurity;
 
+import com.dev.handup.config.sercurity.webAuth.SessionUser;
 import com.dev.handup.domain.users.User;
 import com.dev.handup.domain.users.UserRepository;
 import com.dev.handup.dto.auth.OAuthAttributes;
@@ -20,6 +21,7 @@ import java.util.Collections;
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
+    // OAuth 로그인 후 가져올 정보들
     private final UserRepository userRepository;
     private final HttpSession httpSession;
 
@@ -50,7 +52,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private User saveOrUpdate(OAuthAttributes attributes) {
         User user = userRepository.findByEmail(attributes.getEmail())
-                .map(entity -> entity.update(attributes.getNickname(), attributes.getEmail()))
+                .map(entity -> entity.update(attributes.getName(), attributes.getEmail()))
                 .orElse(attributes.toEntity());
 
         return userRepository.save(user);

@@ -1,15 +1,11 @@
 package com.dev.handup.config.sercurity;
 
-import com.dev.handup.domain.users.UserRole;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
 @Configuration
@@ -17,12 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomOAuth2UserService customOAuth2UserService;
-
-    // Password 암호화
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     // 웹
     @Override
@@ -42,11 +32,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // URL 구분, 권한 설정
                 .authorizeRequests()
                 .antMatchers("/", "/css/**", "/js/**", "/images/**", "/lib/**", "/h2-console/**").permitAll()
-                .antMatchers("/api/v1/**").hasRole(UserRole.USER.name())
-                .anyRequest().authenticated()
+                .antMatchers("/api/v1/**").permitAll()
+                .anyRequest().permitAll()
+                //.anyRequest().authenticated()
                 .and()
-                .oauth2Login()
-                .userInfoEndpoint()
-                .userService(customOAuth2UserService);
+                .logout().logoutSuccessUrl("/");
+//                .and()
+//                .oauth2Login()
+//                .userInfoEndpoint()
+//                .userService(customOAuth2UserService);
     }
 }

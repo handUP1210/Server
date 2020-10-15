@@ -6,7 +6,8 @@ build/
 !**/src/test/**/build/
 
 ### API Key ###
-application-oauth.yml
+**/src/main/resources/application-oauth.yml
+**/src/main/resources/application-aws.yml
 
 ### STS ###
 .apt_generated

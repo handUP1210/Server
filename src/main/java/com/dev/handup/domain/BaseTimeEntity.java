@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class) // 상속 시 필드들을 column으로 인식
 public abstract class BaseTimeEntity {
 
-    @CreatedDate // 생성 시
+    @CreatedDate// 생성 시
     private LocalDateTime createdDate;
 
     @LastModifiedDate // 수정 시 자동 시간 저장

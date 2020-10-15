@@ -18,8 +18,8 @@ public class PostApiController {
     private final PostService postService;
 
     @GetMapping("/")
-    public List<PostsListResponseDto> findByAllDesc() {
-        return postService.findAllDesc();
+    public List<PostsListResponseDto> findByAllAsc() {
+        return postService.findAllASC();
     }
 
     @PostMapping("posts")

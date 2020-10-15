@@ -23,7 +23,7 @@ public class UserApiController {
         UserDto userDto = UserDto.builder()
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .nickname(request.getNickname())
+                .name(request.getName())
                 .address(request.getAddress())
                 .build();
         Long id = userService.joinUser(userDto);
@@ -39,12 +39,12 @@ public class UserApiController {
         userService.loginUser(userDto);
     }
 
-    @GetMapping("users/{nickname}")
-    public UserDto getUser(@PathVariable("nickname") String nickname) {
-        User findUser = userService.findUserNickname(nickname);
+    @GetMapping("users/{name}")
+    public UserDto getUser(@PathVariable("name") String name) {
+        User findUser = userService.findUserName(name);
         return UserDto.builder()
                 .email(findUser.getEmail())
-                .nickname(findUser.getNickname())
+                .name(findUser.getName())
                 .address(findUser.getAddress())
                 .build();
     }
@@ -52,9 +52,9 @@ public class UserApiController {
     @PutMapping("users/{id}") // 수정
     public UsersUpdateResponseDto updateUser(@PathVariable("id") Long id,
                                              @RequestBody @Valid UsersUpdateRequestDto request) {
-        userService.update(id, request.getPassword(), request.getAddress(), request.getNickname()); // 로직
+        userService.update(id, request.getPassword(), request.getAddress(), request.getName()); // 로직
         User findUser = userService.findOne(id); // 쿼리
-        return new UsersUpdateResponseDto(findUser.getId(), findUser.getEmail(), findUser.getPassword(), findUser.getNickname(), findUser.getAddress());
+        return new UsersUpdateResponseDto(findUser.getId(), findUser.getEmail(), findUser.getPassword(), findUser.getName(), findUser.getAddress());
     }
 
     @GetMapping("users/list")
@@ -63,7 +63,7 @@ public class UserApiController {
         List<UserDto> collect = findUsers.stream()
                 .map(u -> UserDto.builder()
                         .email(u.getEmail())
-                        .nickname(u.getNickname())
+                        .name(u.getName())
                         .address(u.getAddress())
                         .build())
                 .collect(Collectors.toList());
