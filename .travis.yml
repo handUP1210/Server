@@ -36,7 +36,7 @@ deploy:
     bucket: handup-travis-deploy
     key: server-side-repo.zip
 
-    bundle)type: zip
+    bundle_type: zip
     application: springboot-webservice
     deployment_group: springboot-webservice-group
     region: ap-northeast-2
