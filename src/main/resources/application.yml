@@ -22,17 +22,16 @@ spring:
     password:
 
   security:
+
     user:
       name: user
       password: test
-
 
   jpa:
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        #        show_sql: true
         format_sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
@@ -47,8 +46,8 @@ spring:
       settings:
         web-allow-others: true
 
-
 logging:
   level:
     org.hibernate.SQL: debug
     #org.hibernate.type: trace
+

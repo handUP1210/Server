@@ -2,12 +2,9 @@ package com.dev.handup.service;
 
 import com.dev.handup.domain.Address;
 import com.dev.handup.domain.users.User;
-import com.dev.handup.dto.users.UserDto;
 import com.dev.handup.domain.users.UserRepository;
+import com.dev.handup.dto.users.UserDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
 
@@ -75,16 +72,11 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void update(Long id, String password, Address address, String name) {
+    public void update(Long id, String password, String name) {
         User user = userRepository.findById(id).orElse(null);
 
         // 더티 체킹
         assert user != null;
-        user.updateUser(password, name, address);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return (UserDetails) userRepository.findByName(username);
+        user.updateUser(password, name);
     }
 }

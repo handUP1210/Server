@@ -1,4 +1,4 @@
-package com.dev.handup.config.sercurity;
+package com.dev.handup.config.sercurity.webMvc;
 
 import com.dev.handup.config.sercurity.webAuth.LoginUserArgumentResolver;
 import lombok.RequiredArgsConstructor;

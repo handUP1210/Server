@@ -1,6 +1,5 @@
 package com.dev.handup.domain.users;
 
-import com.dev.handup.domain.Address;
 import com.dev.handup.domain.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -8,7 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 기본 생성자 접근 불가, new user() 불가
@@ -16,48 +16,45 @@ import javax.validation.constraints.NotBlank;
 @Entity
 public class User extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // PK
 
-    @NotBlank
+    @Column(length = 100, nullable = false, unique = true)
     private String email;
 
+    @Column(length = 100, nullable = false)
     private String password;
 
+    @Column(length = 10)
     private String name;
-
-    @Embedded
-    private Address address;
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING) // 저장값을 문자열로 고정
-    private UserRole role = UserRole.NOT_PERMITTED;
+    private UserRole role = UserRole.USER;
 
-    // 기본 가입 시 NOT_PERMITTED 권한 부여
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<UserRole> roles = new ArrayList<>();
+
     @Builder
-    public User(String email, String password, String name, Address address) {
+    public User(String email, String password, String name ) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.address = address;
-        this.role = getRole();
     }
+    // 로그인 로직을 통해 ROLE_USER로 권한 변경
 
-    // 인증 로직을 통해 ROLE_USER로 권한 변경
     @Builder
-    public User(String email, String password, String name, Address address, UserRole role) {
+    public User(String email, String password, String name, UserRole role) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.address = address;
         this.role = role;
     }
 
-    public void updateUser(String password, String name, Address address) {
+    public void updateUser(String password, String name) {
         this.password = password;
         this.name = name;
-        this.address = address;
     }
 
     public User update(String email, String name) {
@@ -68,8 +65,7 @@ public class User extends BaseTimeEntity {
     }
 
     public String getRoleKey() {
-        return this.role.getKey();
+        return this.getRole().getValue();
     }
-
 }
 

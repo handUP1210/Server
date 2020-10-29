@@ -1,6 +1,5 @@
 package com.dev.handup.dto.users;
 
-import com.dev.handup.domain.Address;
 import lombok.Data;
 import lombok.Getter;
 
@@ -11,5 +10,4 @@ public class UsersUpdateRequestDto {
     private String email;
     private String password;
     private String name;
-    private Address address;
 }
